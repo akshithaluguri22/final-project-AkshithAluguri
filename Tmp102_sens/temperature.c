@@ -1,3 +1,8 @@
+/* Filename   : temperature.c
+ * Author     : Akshith Aluguri
+ * Description: This file initilizes the i2c device and reads the temperature from the sensor
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -14,6 +19,8 @@ char cmdbuf[256];
 int init_temp_sensor() {
     char filename[20];
     sprintf(filename, "/dev/i2c-%d", I2C_BUS);
+
+    //Opening the i2c device bus
     if ((file = open(filename, O_RDWR)) < 0) {
         perror("Failed to open the i2c bus");
         return -1;
@@ -52,20 +59,29 @@ float read_temp() {
 }
 
 int main() {
+    
+    //Initilize the I2c Device
     if (init_temp_sensor() < 0) {
         exit(1);
     }
 
+    //Read the Temperature into temp
     float temp = read_temp();
     printf("Temperature: %.2fC\n", temp);
 
+    //make the command to execute for sending temperature data to server
     snprintf(cmdbuf, sizeof(cmdbuf), "python3 /bin/mqtt-client.py CurrentTemperature:%04fC",temp);
+
+    //Execute the command to send data
     int status = system(cmdbuf);
+
     sleep(1);
+
     if(status){
  	printf("system: error status %d", status);
     }     
-
+    
+    //close the device 
     close(file);
 }
 
