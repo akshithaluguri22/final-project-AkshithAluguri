@@ -92,8 +92,9 @@ void Humidity_Sensor()
 	Buff_Temp[0]=Buff_Humidity[0];
 
 	printf("Humidity = %.1d \n", Buff_Humidity[0]);
-        snprintf(Concatenate,sizeof(Concatenate),"Humidity percentage:%.1d\n", Buff_Humidity[0]);
-        snprintf(Buff_Python,sizeof(Buff_Python),"python3 /bin/mqtt-client.py %s", Concatenate);
+
+
+        snprintf(Buff_Python,sizeof(Buff_Python),"python3 /bin/mqtt-client.py Humiditypercentage:%.1d\n", Buff_Humidity[0]);
         int update = system(Buff_Python);
     
         if(update)
