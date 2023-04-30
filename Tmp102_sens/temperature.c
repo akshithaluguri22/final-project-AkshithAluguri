@@ -64,24 +64,29 @@ int main() {
     if (init_temp_sensor() < 0) {
         exit(1);
     }
+    float temp=0;
+    int status=0;
 
-    //Read the Temperature into temp
-    float temp = read_temp();
-    printf("Temperature: %.2fC\n", temp);
+    while(1){
+    	//Read the Temperature into temp
+    	temp = read_temp();
+    	printf("Temperature: %.2fC\n", temp);
 
-    //make the command to execute for sending temperature data to server
-    snprintf(cmdbuf, sizeof(cmdbuf), "python3 /bin/mqtt-client.py CurrentTemperature:%04fC",temp);
+    	//make the command to execute for sending temperature data to server
+    	snprintf(cmdbuf, sizeof(cmdbuf), "python3 /bin/mqtt-client.py CurrentTemperature:%.2fC",temp);
 
-    //Execute the command to send data
-    int status = system(cmdbuf);
+    	//Execute the command to send data
+    	status = system(cmdbuf);
 
-    sleep(1);
+    	sleep(1);
 
-    if(status){
- 	printf("system: error status %d", status);
-    }     
-    
-    //close the device 
-    close(file);
+    	if(status){
+ 		printf("system: error status %d", status);
+		goto exit;
+    	}     
+    }
+    	//close the device 
+	exit:
+	    close(file);
 }
 
