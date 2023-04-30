@@ -78,7 +78,7 @@ int main() {
     	//Execute the command to send data
     	status = system(cmdbuf);
 
-    	sleep(1);
+	delayMicroseconds(76);
 
     	if(status){
  		printf("system: error status %d", status);
